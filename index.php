@@ -1,54 +1,103 @@
 <?php include 'config.php'; ?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>Sistem Impound Kendaraan</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚗 Impound System | Modern</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome (Icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+    body {
+        background-color: #f9fafb;
+        /* Soft white background */
+    }
+
+    .card-hover:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    </style>
 </head>
 
-<body>
-    <div class="container mt-5">
-        <h1 class="text-center">📋 Daftar Kendaraan Impound</h1>
-        <a href="add.php" class="btn btn-primary mb-3">➕ Tambah Kendaraan</a>
+<body class="font-sans bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-gray-800">
+                <i class="fas fa-car mr-2 text-blue-500"></i> Impound System
+            </h1>
+            <a href="add.php" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition">
+                <i class="fas fa-plus mr-1"></i> Tambah Kendaraan
+            </a>
+        </div>
+    </header>
 
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Jenis</th>
-                    <th>Plat Nomor</th>
-                    <th>Alasan</th>
-                    <th>Durasi</th>
-                    <th>Expire</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                $sql = "SELECT * FROM impounded_vehicles";
-                $result = $conn->query($sql);
-                
-                if ($result->num_rows > 0) {
-                    while($row = $result->fetch_assoc()) {
-                        $expired = (strtotime($row['expiry_date']) < time()) ? "🔴 EXPIRED" : "🟢 AKTIF";
-                        echo "<tr>
-                            <td>{$row['vehicle_type']}</td>
-                            <td>{$row['plate_number']}</td>
-                            <td>{$row['reason']}</td>
-                            <td>{$row['impound_duration']}</td>
-                            <td>{$row['expiry_date']} ($expired)</td>
-                            <td>
-                                <a href='remove.php?plate={$row['plate_number']}' class='btn btn-danger btn-sm'>Hapus</a>
-                            </td>
-                        </tr>";
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-4 py-8">
+        <!-- Table -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jenis
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Plat
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Alasan</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Durasi</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <?php
+                    $sql = "SELECT * FROM impounded_vehicles";
+                    $result = $conn->query($sql);
+                    
+                    if ($result->num_rows > 0) {
+                        while($row = $result->fetch_assoc()) {
+                            $isExpired = strtotime($row['expiry_date']) < time();
+                            $statusClass = $isExpired ? "bg-red-100 text-red-800" : "bg-green-100 text-green-800";
+                            $statusText = $isExpired ? "Expired" : "Aktif";
+                            
+                            echo "<tr class='hover:bg-gray-50 transition'>
+                                <td class='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>{$row['vehicle_type']}</td>
+                                <td class='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>{$row['plate_number']}</td>
+                                <td class='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>{$row['reason']}</td>
+                                <td class='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>{$row['impound_duration']}</td>
+                                <td class='px-6 py-4 whitespace-nowrap'>
+                                    <span class='px-2 py-1 text-xs rounded-full {$statusClass}'>{$statusText}</span>
+                                </td>
+                                <td class='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>
+                                    <a href='remove.php?plate={$row['plate_number']}' class='text-red-500 hover:text-red-700'>
+                                        <i class='fas fa-trash-alt'></i>
+                                    </a>
+                                </td>
+                            </tr>";
+                        }
+                    } else {
+                        echo "<tr><td colspan='6' class='px-6 py-4 text-center text-gray-500'>Tidak ada data kendaraan.</td></tr>";
                     }
-                } else {
-                    echo "<tr><td colspan='6'>Tidak ada data.</td></tr>";
-                }
-                ?>
-            </tbody>
-        </table>
-    </div>
+                    ?>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t mt-8 py-4">
+        <div class="max-w-6xl mx-auto px-4 text-center text-gray-500 text-sm">
+            © 2023 Impound System | Dibuat dengan <i class="fas fa-heart text-red-500"></i>
+        </div>
+    </footer>
 </body>
 
 </html>
