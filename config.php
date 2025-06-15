@@ -1,24 +1,25 @@
 <?php
-// Load .env manually (tanpa Composer)
-$envPath = __DIR__ . '/.env';
-if (file_exists($envPath)) {
-    $env = parse_ini_file($envPath);
-} else {
-    die("File .env tidak ditemukan! Buat file .env terlebih dahulu.");
+// Load environment variables
+if (!file_exists(__DIR__.'/.env')) {
+    die('Please create .env file');
 }
 
-// Koneksi database
-$conn = new mysqli(
-    $env['DB_HOST'],
-    $env['DB_USER'],
-    $env['DB_PASS'],
-    $env['DB_NAME']
-);
+$env = parse_ini_file(__DIR__.'/.env');
+
+// Database Connection
+$conn = new mysqli($env['DB_HOST'], $env['DB_USER'], $env['DB_PASS'], $env['DB_NAME']);
 
 if ($conn->connect_error) {
-    die("Koneksi gagal: " . $conn->connect_error);
+    die("Connection failed: " . $conn->connect_error);
 }
 
-// Contoh query (opsional)
-// $result = $conn->query("SELECT * FROM vehicles");
+// File Upload Settings
+define('UPLOAD_DIR', __DIR__ . '/' . $env['UPLOAD_DIR']);
+define('MAX_FILE_SIZE', (int)$env['MAX_FILE_SIZE']);
+define('ALLOWED_TYPES', explode(',', $env['ALLOWED_TYPES']));
+
+// Auto create upload directory
+if (!file_exists(UPLOAD_DIR)) {
+    mkdir(UPLOAD_DIR, 0755, true);
+}
 ?>
