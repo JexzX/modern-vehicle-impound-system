@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🚗 Impound System | Modern</title>
+    <title>🚗 Modern Impound System</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome (Icons) -->
@@ -43,7 +43,6 @@
         transition: all 0.3s ease;
     }
 
-    /* Loading spinner */
     .spinner {
         width: 24px;
         height: 24px;
@@ -64,7 +63,7 @@
 <body class="font-sans bg-gray-50" x-data="{
     loading: false,
     confirmDelete(plate) {
-        if (confirm('Apakah Anda yakin ingin menghapus kendaraan ini?')) {
+        if (confirm('Are you sure you want to delete this vehicle?')) {
             this.loading = true;
             window.location.href = 'remove.php?plate=' + plate;
         }
@@ -77,7 +76,7 @@
                 <i class="fas fa-car mr-2 text-blue-500"></i> Impound System
             </h1>
             <a href="add.php" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg smooth-transition">
-                <i class="fas fa-plus mr-1"></i> Tambah Kendaraan
+                <i class="fas fa-plus mr-1"></i> Add Vehicle
             </a>
         </div>
     </header>
@@ -94,18 +93,18 @@
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jenis
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Plat
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Plate
                         </th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Alasan</th>
+                            Reason</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Durasi</th>
+                            Duration</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Status</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi
-                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Action</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
@@ -118,7 +117,7 @@
                         while($row = $result->fetch_assoc()) {
                             $isExpired = strtotime($row['expiry_date']) < time();
                             $statusClass = $isExpired ? "bg-red-100 text-red-800" : "bg-green-100 text-green-800";
-                            $statusText = $isExpired ? "Expired" : "Aktif";
+                            $statusText = $isExpired ? "Expired" : "Active";
                             
                             echo "<tr class='hover:bg-gray-50 smooth-transition fade-in' style='animation-delay: {$delay}ms'>
                                 <td class='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>{$row['vehicle_type']}</td>
@@ -138,7 +137,7 @@
                         }
                     } else {
                         echo "<tr class='fade-in'>
-                            <td colspan='6' class='px-6 py-4 text-center text-gray-500'>Tidak ada data kendaraan.</td>
+                            <td colspan='6' class='px-6 py-4 text-center text-gray-500'>No vehicle data found.</td>
                         </tr>";
                     }
                     ?>
@@ -150,7 +149,7 @@
     <!-- Footer -->
     <footer class="bg-white border-t mt-8 py-4 smooth-transition">
         <div class="max-w-6xl mx-auto px-4 text-center text-gray-500 text-sm">
-            © 2023 Impound System | Dibuat dengan <i class="fas fa-heart text-red-500"></i>
+            © 2023 Impound System | Made with <i class="fas fa-heart text-red-500"></i>
         </div>
     </footer>
 
@@ -184,7 +183,7 @@
 
         // Check for success parameter in URL
         if (new URLSearchParams(window.location.search).has('success')) {
-            Alpine.store('notification').notify('Operasi berhasil!');
+            Alpine.store('notification').notify('Operation successful!');
         }
     });
     </script>

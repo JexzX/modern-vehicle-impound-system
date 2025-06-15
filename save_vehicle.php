@@ -6,8 +6,8 @@ $plate_number = $_POST['plate_number'];
 $reason = $_POST['reason'];
 $impound_duration = $_POST['impound_duration'];
 
-// Hitung expiry_date (contoh: +7 hari dari sekarang)
-$days = (int) $impound_duration; // Jika input "7 hari"
+// Calculate expiry date
+$days = (int) $impound_duration; // If input is "7 days"
 $expiry_date = date('Y-m-d H:i:s', strtotime("+$days days"));
 
 $sql = "INSERT INTO impounded_vehicles (vehicle_type, plate_number, reason, impound_duration, expiry_date) 
